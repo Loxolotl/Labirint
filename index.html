@@ -5,12 +5,13 @@
         <script src="js/scripts.js"></script>
         <link rel="stylesheet" href="css/styles.css">
         <link rel="icon" type="image/x-icon" href="img/favicon.ico">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-        <script src="lib/jquery-3.6.1.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="lib/jquery-3.6.4.min.js"></script>
     </head>
     <body>
         <div id="main">
             <canvas id="canvas" width="644" height="644"></canvas>
+			<div id="status"></div>
             <script>
                 var key = {
 	UP: 38,
@@ -19,6 +20,12 @@
 	RIGHT: 39,
   C: 67
 };
+
+window.addEventListener("keydown", function(e) {
+    if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+        e.preventDefault();
+    }
+}, false);
 
 console.log(key);
 
@@ -30,7 +37,14 @@ var paper = square.getContext("2d");
 var x = 314;
 var y =3;
 
-drawing_line("#FF0000", x-1, y, x, y, paper);
+drawing_line("#9fd5ff", x-1, y, x, y, paper);
+
+
+
+
+
+
+
 
 function drawing_line(color, x_start, y_start, x_end, y_end, board){
 	board.beginPath();
@@ -44,7 +58,11 @@ function drawing_line(color, x_start, y_start, x_end, y_end, board){
 
 function drawAction(whenPressKey){
 	
-	var colorLine ="#ff0000";
+
+	
+
+
+	var colorLine ="#9fd5ff";
 	var dotMove = 6;
 
 	switch(whenPressKey.keyCode){
@@ -77,6 +95,8 @@ function drawAction(whenPressKey){
 function clearCanvas(whenPressKey) {
 	if (whenPressKey.keyCode == key.C) {
 		paper.clearRect(0, 0, square.width, square.height);
+		x= 314;
+		y=3;
         var background = new Image();
                 background.src = "img/maze/Maze_00.svg";
         background.onload = function(){
@@ -95,11 +115,49 @@ function clearCanvas(whenPressKey) {
                 // Make sure the image is loaded first otherwise nothing will draw.
                 background.onload = function(){
                 ctx.drawImage(background,0,0);
+				
                    
 }
+paper.fillStyle = randomColor();
+paper.fillRect(265, 265, 295, 295);
 
+$('#canvas').mousemove(function(e) {
+    var pos = findPos(this);
+    var x = e.pageX - pos.x;
+    var y = e.pageY - pos.y;
+    var coord = "x=" + x + ", y=" + y;
+    var c = this.getContext('2d');
+    var p = c.getImageData(x, y, 1, 1).data; 
+    var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+    $('#status').html(coord + "<br>" + hex);
+});
 
-// Draw whatever else over top of it on the canvas.
+function findPos(obj) {
+    var curleft = 0, curtop = 0;
+    if (obj.offsetParent) {
+        do {
+            curleft += obj.offsetLeft;
+            curtop += obj.offsetTop;
+        } while (obj = obj.offsetParent);
+        return { x: curleft, y: curtop };
+    }
+    return undefined;
+}
+
+function rgbToHex(r, g, b) {
+    if (r > 255 || g > 255 || b > 255)
+        throw "Invalid color component";
+    return ((r << 16) | (g << 8) | b).toString(16);
+}
+
+function randomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function randomColor() {
+    return `rgb(${randomInt(256)}, ${randomInt(256)}, ${randomInt(256)})`
+}
+
             </script>
         </div>
     </body>
