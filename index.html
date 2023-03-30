@@ -10,7 +10,7 @@
     </head>
     <body>
         <div id="main">
-            <canvas id="banvas" width="400" height="400"></canvas>
+            
             <img id=img height=40 src="https://lh3.googleusercontent.com/a-/AOh14Gh-CwvGkngFp6REJf46ncZD2p-nesp_4DmKOpSXGA=k-s420"   />
             <canvas id="canvas" width="644" height="644"></canvas>
 			<div id="status"></div>
@@ -107,39 +107,42 @@ function clearCanvas(whenPressKey) {
         }
 	}
 }*/
-const banvas = document.getElementById('banvas');
-const context = banvas.getContext('2d');
-const EL_img = document.querySelector("#img");
-const pos = {x:0, y:0};
+var canvas = document.getElementById('canvas');
+var context = canvas.getContext('2d');
+var EL_img = document.querySelector("#img");
+var pos = {x:0, y:0};
+var colorType = document.getElementById("#colorType");
 
-const colorType = document.querySelector("#colorType");
-
-document.addEventListener("keydown", (ev) => {
-  const dir = (ev.key.match(/(?<=^Arrow)\w+/)||[])[0];
+document.addEventListener("keydown", function(ev) {
+  var dir = (ev.key.match(/(?<=^Arrow)\w+/)||[])[0];
   if (!dir) return; // Not an arrow key.
   ev.preventDefault(); // Prevent Browser scroll if overflow
 
   ({
-    Left:  () => pos.x -= 5,
-    Right: () => pos.x += 5,
-    Up:    () => pos.y -= 5,
-    Down:  () => pos.y += 5,
+    Left:  function() {pos.x -= 5;},
+    Right: function() {pos.x += 5;},
+    Up:    function() {pos.y -= 5;},
+    Down:  function() {pos.y += 5;},
   }[dir])(); 
 
-  const imgRect = EL_img.getBoundingClientRect();
-  const banvasX = imgRect.left - window.scrollX + pos.x;
-  const banvasY = imgRect.top - window.scrollY + pos.y;
-  const imageData = context.getImageData(banvasX, banvasY, 1, 1);
-  const pixel = imageData.data;
-  const color = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+  var imgRect = EL_img.getBoundingClientRect();
+  var canvasX = imgRect.left - window.scrollX + pos.x;
+  var canvasY = imgRect.top - window.scrollY + pos.y;
 
-  colorType.textContent = color;
-  
-  EL_img.style.transform = `translate(${pos.x}px, ${pos.y}px)`;
+  // Check if the image is within the boundaries of the canvas.
+  if (canvasX >= 0 && canvasY >= 0 && canvasX < canvas.width && canvasY < canvas.height) {
+    var imageData = context.getImageData(canvasX, canvasY, 1, 1);
+    var pixel = imageData.data;
+    var color = "rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
+
+    colorType.textContent = color;
+  }
+
+  EL_img.style.transform = "translate(" + pos.x + "px, " + pos.y + "px)";
 });
 
 
-                var canvas = document.getElementById("canvas"),
+                canvas = document.getElementById("canvas"),
                 ctx = canvas.getContext("2d");
 
                 var background = new Image();
@@ -152,8 +155,8 @@ document.addEventListener("keydown", (ev) => {
 				
                    
 }
-paper.fillStyle = randomColor();
-paper.fillRect(265, 265, 295, 295);
+canvas.fillStyle = randomColor();
+canvas.fillRect(265, 265, 295, 295);
 
 $('#canvas').mousemove(function(e) {
     var pos = findPos(this);
