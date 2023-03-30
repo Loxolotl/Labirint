@@ -10,8 +10,8 @@
     </head>
     <body>
         <div id="main">
+            <canvas id="banvas" width="40" height="40"></canvas>
             
-            <img id=img height=40 src="https://lh3.googleusercontent.com/a-/AOh14Gh-CwvGkngFp6REJf46ncZD2p-nesp_4DmKOpSXGA=k-s420"   />
             <canvas id="canvas" width="644" height="644"></canvas>
 			<div id="status"></div>
             <div id="colorType"></div>
@@ -107,38 +107,49 @@ function clearCanvas(whenPressKey) {
         }
 	}
 }*/
-var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
-var EL_img = document.querySelector("#img");
-var pos = {x:0, y:0};
-var colorType = document.getElementById("#colorType");
+var banvas = document.createElement('banvas');
+var ctx = banvas.getContext('2d');
 
-document.addEventListener("keydown", function(ev) {
-  var dir = (ev.key.match(/(?<=^Arrow)\w+/)||[])[0];
+var img = new Image();
+img.src = 'https://lh3.googleusercontent.com/a-/AOh14Gh-CwvGkngFp6REJf46ncZD2p-nesp_4DmKOpSXGA=k-s420';
+img.onload = function() {
+  banvas.width = img.width;
+  banvas.height = img.height;
+  ctx.drawImage(img, 0, 0);
+  document.body.appendChild(banvas);
+};
+
+var pos = {x: 0, y: 0};
+var EL_img = document.querySelector('#img');
+var EL_colorType = document.querySelector('#colorType');
+
+document.addEventListener('keydown', function(ev) {
+  var dir = (ev.key.match(/(?<=^Arrow)\w+/) || [])[0];
   if (!dir) return; // Not an arrow key.
   ev.preventDefault(); // Prevent Browser scroll if overflow
 
-  ({
-    Left:  function() {pos.x -= 5;},
-    Right: function() {pos.x += 5;},
-    Up:    function() {pos.y -= 5;},
-    Down:  function() {pos.y += 5;},
-  }[dir])(); 
-
-  var imgRect = EL_img.getBoundingClientRect();
-  var canvasX = imgRect.left - window.scrollX + pos.x;
-  var canvasY = imgRect.top - window.scrollY + pos.y;
-
-  // Check if the image is within the boundaries of the canvas.
-  if (canvasX >= 0 && canvasY >= 0 && canvasX < canvas.width && canvasY < canvas.height) {
-    var imageData = context.getImageData(canvasX, canvasY, 1, 1);
-    var pixel = imageData.data;
-    var color = "rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
-
-    colorType.textContent = color;
+  switch (dir) {
+    case 'Left':
+      pos.x -= 5;
+      break;
+    case 'Right':
+      pos.x += 5;
+      break;
+    case 'Up':
+      pos.y -= 5;
+      break;
+    case 'Down':
+      pos.y += 5;
+      break;
   }
 
-  EL_img.style.transform = "translate(" + pos.x + "px, " + pos.y + "px)";
+  EL_img.style.transform = 'translate(' + pos.x + 'px, ' + pos.y + 'px)';
+  banvas.style.transform = 'translate(' + pos.x + 'px, ' + pos.y + 'px)';
+  
+  var pixelData = ctx.getImageData(pos.x, pos.y, 1, 1).data;
+  var color = 'rgb(' + pixelData[0] + ', ' + pixelData[1] + ', ' + pixelData[2] + ')';
+  EL_colorType.style.background = color;
+  EL_colorType.innerHTML = color;
 });
 
 
