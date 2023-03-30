@@ -28,3 +28,8 @@ body{
     height: 40px;
     transition: transform 0.2s;
   }
+
+  #banvas{
+    border: 1px rgb(99, 42, 165) solid;
+    margin-top: 15vh;
+}
