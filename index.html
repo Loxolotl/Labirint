@@ -14,18 +14,18 @@
             <canvas id="bgcanvas" width="644" height="644"></canvas>
 			<div id="status"></div>
             <script>
-                var key = {
-	UP: 38,
-	DOWN: 40,
-	LEFT: 37,
-	RIGHT: 39,
+ var key = {
+  UP: 38,
+  DOWN: 40,
+  LEFT: 37,
+  RIGHT: 39,
   C: 67
 };
 
 window.addEventListener("keydown", function(e) {
-    if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
-        e.preventDefault();
-    }
+  if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+    e.preventDefault();
+  }
 }, false);
 
 console.log(key);
@@ -36,25 +36,18 @@ document.addEventListener("keydown", clearCanvas);
 var square = document.getElementById("canvas");
 var paper = square.getContext("2d");
 var x = 314;
-var y =3;
+var y = 3;
 
 drawing_line("#9fd5ff", x-1, y, x, y, paper);
 
-
-
-
-
-
-
-
 function drawing_line(color, x_start, y_start, x_end, y_end, board){
-	board.beginPath();
-	board.strokeStyle = color;
-	board.lineWidth = 4;
-	board.moveTo(x_start,y_start);
-	board.lineTo(x_end,y_end);
-	board.stroke(); 
-	board.closePath();
+  board.beginPath();
+  board.strokeStyle = color;
+  board.lineWidth = 4;
+  board.moveTo(x_start,y_start);
+  board.lineTo(x_end,y_end);
+  board.stroke(); 
+  board.closePath();
 }
 
 // Create a new canvas element for the background
@@ -66,52 +59,66 @@ bgCanvas.width = square.width;
 bgCanvas.height = square.height;
 
 // Draw the background color on the background canvas
-
+bgCtx.fillStyle = "#FFFFFF";
+bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
 
 // Append the background canvas to the DOM, behind the main canvas
 square.parentNode.insertBefore(bgCanvas, square);
 
 // Modify the drawAction function to use the background canvas
 function drawAction(whenPressKey){
-	var colorLine ="#9fd5ff";
-	var dotMove = 2;
+  var colorLine = "#9fd5ff";
+  var dotMove = 2;
 
-	switch(whenPressKey.keyCode){
+  switch(whenPressKey.keyCode){
 
-		case key.UP:
-			drawing_line(colorLine, x, y, x, y - dotMove, paper);
-			y = y - dotMove;
-		break;
+    case key.UP:
+      drawing_line(colorLine, x, y, x, y - dotMove, paper);
+      y = y - dotMove;
+      break;
 
-		case key.DOWN:
-			drawing_line(colorLine, x, y, x, y + dotMove, paper);
-			y = y + dotMove;
-		break;
+    case key.DOWN:
+      drawing_line(colorLine, x, y, x, y + dotMove, paper);
+      y = y + dotMove;
+      break;
 
-		case key.LEFT:
-			drawing_line(colorLine, x, y, x - dotMove, y, paper);
-			x = x - dotMove;
-		break;
+    case key.LEFT:
+      drawing_line(colorLine, x, y, x - dotMove, y, paper);
+      x = x - dotMove;
+      break;
 
-		case key.RIGHT:
-			drawing_line(colorLine, x, y, x + dotMove, y, paper);
-			x = x + dotMove;
-		break;
+    case key.RIGHT:
+      drawing_line(colorLine, x, y, x + dotMove, y, paper);
+      x = x + dotMove;
+      break;
 
-		default:
-		console.log("Another key");
-	}
+    default:
+      console.log("Another key");
+  }
 
-	// Get the color of the pixel at the current coordinates on the background canvas
-	var p = bgCtx.getImageData(x, y, 1, 1).data; 
-	var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
-	
-	// If the color is black, set the coordinates to (314, 3)
-	if (hex === "#000000") {
-		x= 314;
-		y=3;
-	}
+  // Get the color of the pixel at the current coordinates on the background canvas
+  var p = bgCtx.getImageData(x, y, 1, 1).data;
+  var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+
+  // If the color is black, set the coordinates to (314, 3)
+  if (hex === "#000000") {
+    x = 314;
+    y = 3;
+  }
+
+  console.log("Detected color: " + hex);
 }
+
+
+
+
+
+function rgbToHex(r, g, b) {
+  if (r > 255 || g > 255 || b > 255)
+    throw "Invalid color component";
+  return ((r << 16) | (g << 8) | b).toString(16);
+}
+
 
 function clearCanvas(whenPressKey) {
 	if (whenPressKey.keyCode == key.C) {
@@ -119,23 +126,20 @@ function clearCanvas(whenPressKey) {
 		x= 314;
 		y=3;
         var background = new Image();
-                background.src = "img/maze/Maze_00.svg";
+                background.src = "Maze_00.svg";
         background.onload = function(){
-                ctx.drawImage(background,0,0);
+            bgCtx.drawImage(background,0,0);
         }
 	}
 }
             
-                var bgcanvas = document.getElementById("bgcanvas"),
-                ctx = bgcanvas.getContext("2d");
-
                 var background = new Image();
-                background.src = "img/maze/Maze_00.svg";
-                
+                background.src = "Maze_00.svg";
+            
                 
                 // Make sure the image is loaded first otherwise nothing will draw.
                 background.onload = function(){
-                ctx.drawImage(background,0,0);
+                bgCtx.drawImage(background,0,0);
 				
                    
 }
