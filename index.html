@@ -10,13 +10,11 @@
     </head>
     <body>
         <div id="main">
-            <canvas id="banvas" width="40" height="40"></canvas>
-            
             <canvas id="canvas" width="644" height="644"></canvas>
+            <canvas id="bgcanvas" width="644" height="644"></canvas>
 			<div id="status"></div>
-            <div id="colorType"></div>
             <script>
-            /*    var key = {
+                var key = {
 	UP: 38,
 	DOWN: 40,
 	LEFT: 37,
@@ -59,14 +57,24 @@ function drawing_line(color, x_start, y_start, x_end, y_end, board){
 	board.closePath();
 }
 
+// Create a new canvas element for the background
+var bgCanvas = document.getElementById("bgcanvas");
+var bgCtx = bgCanvas.getContext("2d");
+
+// Set the size of the background canvas to match the main canvas
+bgCanvas.width = square.width;
+bgCanvas.height = square.height;
+
+// Draw the background color on the background canvas
+
+
+// Append the background canvas to the DOM, behind the main canvas
+square.parentNode.insertBefore(bgCanvas, square);
+
+// Modify the drawAction function to use the background canvas
 function drawAction(whenPressKey){
-	
-
-	
-
-
 	var colorLine ="#9fd5ff";
-	var dotMove = 6;
+	var dotMove = 2;
 
 	switch(whenPressKey.keyCode){
 
@@ -93,6 +101,16 @@ function drawAction(whenPressKey){
 		default:
 		console.log("Another key");
 	}
+
+	// Get the color of the pixel at the current coordinates on the background canvas
+	var p = bgCtx.getImageData(x, y, 1, 1).data; 
+	var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+	
+	// If the color is black, set the coordinates to (314, 3)
+	if (hex === "#000000") {
+		x= 314;
+		y=3;
+	}
 }
 
 function clearCanvas(whenPressKey) {
@@ -106,55 +124,10 @@ function clearCanvas(whenPressKey) {
                 ctx.drawImage(background,0,0);
         }
 	}
-}*/
-var banvas = document.createElement('banvas');
-var ctx = banvas.getContext('2d');
-
-var img = new Image();
-img.src = 'https://lh3.googleusercontent.com/a-/AOh14Gh-CwvGkngFp6REJf46ncZD2p-nesp_4DmKOpSXGA=k-s420';
-img.onload = function() {
-  banvas.width = img.width;
-  banvas.height = img.height;
-  ctx.drawImage(img, 0, 0);
-  document.body.appendChild(banvas);
-};
-
-var pos = {x: 0, y: 0};
-var EL_img = document.querySelector('#img');
-var EL_colorType = document.querySelector('#colorType');
-
-document.addEventListener('keydown', function(ev) {
-  var dir = (ev.key.match(/(?<=^Arrow)\w+/) || [])[0];
-  if (!dir) return; // Not an arrow key.
-  ev.preventDefault(); // Prevent Browser scroll if overflow
-
-  switch (dir) {
-    case 'Left':
-      pos.x -= 5;
-      break;
-    case 'Right':
-      pos.x += 5;
-      break;
-    case 'Up':
-      pos.y -= 5;
-      break;
-    case 'Down':
-      pos.y += 5;
-      break;
-  }
-
-  EL_img.style.transform = 'translate(' + pos.x + 'px, ' + pos.y + 'px)';
-  banvas.style.transform = 'translate(' + pos.x + 'px, ' + pos.y + 'px)';
-  
-  var pixelData = ctx.getImageData(pos.x, pos.y, 1, 1).data;
-  var color = 'rgb(' + pixelData[0] + ', ' + pixelData[1] + ', ' + pixelData[2] + ')';
-  EL_colorType.style.background = color;
-  EL_colorType.innerHTML = color;
-});
-
-
-                canvas = document.getElementById("canvas"),
-                ctx = canvas.getContext("2d");
+}
+            
+                var bgcanvas = document.getElementById("bgcanvas"),
+                ctx = bgcanvas.getContext("2d");
 
                 var background = new Image();
                 background.src = "img/maze/Maze_00.svg";
@@ -166,46 +139,6 @@ document.addEventListener('keydown', function(ev) {
 				
                    
 }
-canvas.fillStyle = randomColor();
-canvas.fillRect(265, 265, 295, 295);
-
-$('#canvas').mousemove(function(e) {
-    var pos = findPos(this);
-    var x = e.pageX - pos.x;
-    var y = e.pageY - pos.y;
-    var coord = "x=" + x + ", y=" + y;
-    var c = this.getContext('2d');
-    var p = c.getImageData(x, y, 1, 1).data; 
-    var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
-    $('#status').html(coord + "<br>" + hex);
-});
-
-function findPos(obj) {
-    var curleft = 0, curtop = 0;
-    if (obj.offsetParent) {
-        do {
-            curleft += obj.offsetLeft;
-            curtop += obj.offsetTop;
-        } while (obj = obj.offsetParent);
-        return { x: curleft, y: curtop };
-    }
-    return undefined;
-}
-
-function rgbToHex(r, g, b) {
-    if (r > 255 || g > 255 || b > 255)
-        throw "Invalid color component";
-    return ((r << 16) | (g << 8) | b).toString(16);
-}
-
-function randomInt(max) {
-  return Math.floor(Math.random() * max);
-}
-
-function randomColor() {
-    return `rgb(${randomInt(256)}, ${randomInt(256)}, ${randomInt(256)})`
-}
-
             </script>
         </div>
     </body>
