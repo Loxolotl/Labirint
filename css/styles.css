@@ -25,7 +25,7 @@ body{
     position: absolute;
     margin-left: auto;
     margin-right: auto;
-
+    z-index: 11;
 }
 #bgcanvas{
     border: 1px rgb(54, 42, 165) solid;
@@ -33,7 +33,7 @@ body{
     position: absolute;
     margin-left: auto;
     margin-right: auto;
-    
+    z-index: 10;
 }
 
 #img {
