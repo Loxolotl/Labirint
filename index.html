@@ -17,9 +17,14 @@
             <canvas id="bgcanvas" width="644" height="644"></canvas>
         
             <script>
-                $(document).ready(function() {
-                    $("#myAudio").get(0).play();
-                });
+                const audio = document.getElementById("myAudio");
+document.addEventListener("pointermove", function() {
+  audio.play();
+  window.onload = function() {
+  const audio = document.getElementById("myAudio");
+  audio.play();
+};
+});
  var key = {
   UP: 38,
   DOWN: 40,
@@ -113,7 +118,14 @@ function drawAction(whenPressKey){
     paper.clearRect(0, 0, square.width, square.height);
   }
 
-  console.log("Detected color: " + hex);
+
+  if (x<0 || y < 0) {
+    x = 314;
+    y = 3;
+    paper.clearRect(0, 0, square.width, square.height);
+  }
+
+  
 }
 
 
