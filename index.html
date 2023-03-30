@@ -121,13 +121,13 @@ function clearCanvas(whenPressKey) {
 paper.fillStyle = randomColor();
 paper.fillRect(265, 265, 295, 295);
 
-$('#canvas').mousemove(function(e) {
+$('#canvas').keydown(function(e) {
     var pos = findPos(this);
-    var x = e.pageX - pos.x;
-    var y = e.pageY - pos.y;
-    var coord = "x=" + x + ", y=" + y;
+    var x1 = e.x - pos.x;
+    var y1 = e.y - pos.y;
+    var coord = "x=" + x1 + ", y=" + y1;
     var c = this.getContext('2d');
-    var p = c.getImageData(x, y, 1, 1).data; 
+    var p = c.getImageData(x1, y1, 1, 1).data; 
     var hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
     $('#status').html(coord + "<br>" + hex);
 });
